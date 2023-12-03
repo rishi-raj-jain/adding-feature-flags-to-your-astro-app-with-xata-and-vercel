@@ -1,0 +1,24 @@
+---
+import { ViewTransitions } from 'astro:transitions'
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Feature Flags with Xata and Astro</title>
+    <meta charset="UTF-8" />
+    <ViewTransitions handleForms />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Astro description" />
+  </head>
+  <body>
+    <div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-white py-6 sm:py-12">
+      <div class="relative bg-white px-6 pb-8 pt-10 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10">
+        <div class="mx-auto max-w-md">
+          <slot />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

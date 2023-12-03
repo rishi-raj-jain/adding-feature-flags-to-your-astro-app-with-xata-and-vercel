@@ -1,0 +1,63 @@
+---
+import { XataClient } from '@/xata'
+import Form from '@/components/Form.astro'
+import Layout from '@/layouts/Layout.astro'
+import Failure from '@/components/Failure.astro'
+import Success from '@/components/Success.astro'
+import XataLogoWithSymbol from '@/components/Xata.astro'
+
+const response = { form: false, onboarded: false, userEmail: '' }
+
+if (Astro.request.method === 'POST') {
+  try {
+    // Indicate that the request is being processed
+    response.form = true
+    // Get the user email from the form submissions
+    const data = await Astro.request.formData()
+    const userEmail = data.get('email') as string
+    // Create a Xata Client to fetch the flag from
+    const xata = new XataClient({
+      apiKey: import.meta.env.XATA_API_KEY,
+      branch: import.meta.env.XATA_BRANCH,
+    })
+    // Get the percentage set in the flag
+    // Get the string to be contained in the email to verify
+    const { percentage, contains } = await xata.db['my-flag-name'].read('the-flag')
+    // Build your own logic
+    if (userEmail) {
+      response.userEmail = userEmail
+      // Check if email contains the expected,
+      // if yes onboard the user to a new flow
+      if (percentage > 30 && userEmail.endsWith(contains)) {
+        response.onboarded = true
+      }
+      // If not, let's not onboard the user to the new flow
+      else {
+        response.onboarded = false
+      }
+    }
+  } catch (e) {
+    // pass
+  }
+}
+---
+
+<Layout>
+  <XataLogoWithSymbol />
+  <div class="divide-y divide-gray-300/50">
+    <div class="space-y-6 py-8 text-base leading-7 text-gray-600">
+      {response.form && <>{response.onboarded ? <Success /> : <Failure />}</>}
+      <p>This is a demo of customizing your workflows using feature flags with Xata and Astro.</p>
+      <p>
+        If your email contains the suffix as part of the <span class="rounded bg-gray-100 px-1">the-flag</span> feature, set in the the demo <span
+          class="rounded bg-[#9F87FF] px-1 text-white">Xata</span
+        >
+         instance, you'd be taken to a personalized flow after entering your an email below 👇🏻
+      </p>
+      <p class="text-sm text-gray-400">Hint: Right now emails with @someone.com pass that flag check.</p>
+    </div>
+    <div class="pt-8 text-base font-semibold leading-7">
+      <Form email={response.userEmail} />
+    </div>
+  </div>
+</Layout>

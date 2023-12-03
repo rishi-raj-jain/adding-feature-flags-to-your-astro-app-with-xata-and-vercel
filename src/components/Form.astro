@@ -1,0 +1,17 @@
+---
+const { email } = Astro.props
+---
+
+<form method="post" autocomplete="off" class="flex flex-col gap-y-4 text-base font-semibold leading-7">
+  <input
+    required
+    name="email"
+    type="email"
+    value={email}
+    placeholder="Email Address (a demo)"
+    class="rounded border px-3 py-1 text-[#9F87FF] outline-none focus:border-[#9F87FF]"
+  />
+  <button type="submit" class="max-w-max rounded border border-[#DE99F6]/75 px-3 py-0.5 text-[#9F87FF]/75 transition duration-200 hover:bg-[#DE99F6] hover:text-white">
+    Proceed &rarr;
+  </button>
+</form>
